@@ -49,7 +49,7 @@ public class TokenController {
         return tokenValues;
     }
 
-    @Secured({ROLE_ADMIN, ROLE_USER})       //TODO to kasuje tokeny z bazy, tego zalogowanego uzytkownika, mozna by uzywac przy wylogowywaniu
+    @Secured({ROLE_ADMIN, ROLE_USER})       //TODO to kasuje tokeny access i refresh z bazy, tego zalogowanego uzytkownika, mozna by uzywac przy wylogowywaniu
     @RequestMapping(path = "/revoke",
             method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
