@@ -21,7 +21,6 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public static final String SUCCESS = "success";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String ROLE_USER = "ROLE_USER";
 
@@ -38,9 +37,8 @@ public class UserController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserDTO> getUsers(){
-        log.info(String.format("received request to list user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
+        log.info(String.format("received request to list users %s", authenticationFacadeService.getAuthentication().getPrincipal()));
         return this.userService.getAllUsers().asJava();
-//        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getAllUsers().asJava());    //TODO sie trzeba zastanowic czy ma byc Api response czy normalnie
     }
 
     @Secured({ROLE_ADMIN, ROLE_USER})
@@ -51,4 +49,5 @@ public class UserController {
         log.info(String.format("received request to update user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
         return this.userService.getUserById(userId);
     }
+
 }

@@ -67,7 +67,7 @@ public class SwaggerConfig {
 
         SecurityScheme oauth = new OAuthBuilder().name(SECURITY_SCHEME_NAME)
                 .grantTypes(Arrays.asList(grantType))
-                .scopes(Arrays.asList(scopes()))
+                //.scopes(Arrays.asList(scopes()))
                 .build();
         return oauth;
     }

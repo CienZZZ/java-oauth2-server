@@ -19,7 +19,7 @@ public class UserDTO {
     public final LocalDate dateLastChange;
     public final Set<Role> roles;
 
-    public UserDTO(long id, String name, String password, LocalDate registerDate, Boolean active, Boolean changedPassword, LocalDate dateLastChange, Set roles) {
+    public UserDTO(long id, String name, String password, LocalDate registerDate, Boolean active, Boolean changedPassword, LocalDate dateLastChange, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.password = password;

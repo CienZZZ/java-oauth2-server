@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
@@ -34,6 +35,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private static final String SCOPE_READ = "read";
     private static final String SCOPE_WRITE = "write";
     private static final String TRUST = "trust";
+    private static final int ACCESS_TOKEN_VALIDITY = 3600;  // 1 hour   (60*60)
+    private static final int REFRESH_TOKEN_VALIDITY = 2592000;  // 30 days  (60*60*24*30)
 
     @Autowired
     @Qualifier("dataSource")
@@ -69,17 +72,27 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //    }
 
     @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {        // TODO zostawic to in memory czy ma byc z bazy danych ?
         clients
                 .inMemory()
                 .withClient(CLIENT_ID)
                 .secret(CLIENT_SECRET)
                 .authorizedGrantTypes(GRANT_TYPE_PASSWORD, AUTHORIZATION_CODE, REFRESH_TOKEN, IMPLICIT )
-                .scopes(SCOPE_READ, SCOPE_WRITE, TRUST);
+                .scopes(SCOPE_READ, SCOPE_WRITE, TRUST)
+                .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY)
+                .refreshTokenValiditySeconds(REFRESH_TOKEN_VALIDITY);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager).userDetailsService(userDetailsService);
+    }
+
+    @Bean
+    public DefaultTokenServices tokenServices(){
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setSupportRefreshToken(true);
+        tokenServices.setTokenStore(tokenStore());
+        return tokenServices;
     }
 }
