@@ -16,13 +16,11 @@ import pl.weilandt.wms.dto.UserDTO;
 import pl.weilandt.wms.exception.NoUserException;
 import pl.weilandt.wms.exception.ResourceExistsException;
 import pl.weilandt.wms.model.Role;
-import pl.weilandt.wms.model.RoleType;
 import pl.weilandt.wms.model.User;
 import pl.weilandt.wms.repository.RoleRepository;
 import pl.weilandt.wms.repository.UserRepository;
 import pl.weilandt.wms.service.UserService;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -86,10 +84,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userRepository.findByNameIgnoreCase(newUser.getName()).isPresent()){
             throw new ResourceExistsException(newUser.getName());
         } else {
-            java.util.List<RoleType> roleTypes = new ArrayList<>();
-            newUser.getRoles().stream().map(role -> roleTypes.add(RoleType.valueOf(role.toString())));
-            //newUser.roles = roleRepository.find(newUser.getRoles());
-            return userRepository.save(new User(
+            //java.util.List<RoleType> roleTypes = new ArrayList<>();
+//            Set<Role> roleTypes = null;
+//            newUser.getRoles().stream().map(role -> roleTypes.add(RoleType.valueOf(role.toString()));
+//            newUser.roles = roleRepository.find(roleTypes);
+            return userRepository.save(new User(        // TODO zapisuje uzytkownika z rolami, ale role rozroznia po ID, trzeba zrobic zeby po nazwie
                     newUser.name,
                     passwordEncoder.encode(newUser.password),
                     newUser.registerDate,

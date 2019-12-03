@@ -1,7 +1,6 @@
 package pl.weilandt.wms.model;
 
 import lombok.Getter;
-import lombok.Setter;
 import pl.weilandt.wms.dto.UserDTO;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Getter
-@Setter
+//@Setter
 public class User {
 
     @Id
