@@ -39,7 +39,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private Set<GrantedAuthority> getAuthorities(User user) {
         Set<Role> roleByUserId = user.getRoles();
-        final Set<GrantedAuthority> authorities = roleByUserId.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toString().toUpperCase())).collect(Collectors.toSet());
+        final Set<GrantedAuthority> authorities = roleByUserId.stream().map(
+                role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toString().toUpperCase())).collect(Collectors.toSet());
         return authorities;
     }
 
@@ -47,17 +48,27 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByNameIgnoreCase(login).orElse(null);
 
-        org.springframework.security.core.userdetails.User.UserBuilder builder = null;
-        if (user != null){
-            builder = org.springframework.security.core.userdetails.User.withUsername(login);
-            builder.password(user.getPassword());
-            Set<GrantedAuthority> grantedAuthorities = getAuthorities(user);
-            builder.authorities(grantedAuthorities);
-        } else {
-            throw new UsernameNotFoundException("User not found.");
-        }
+//        org.springframework.security.core.userdetails.User.UserBuilder builder = null;
+//        if (user != null){
+//            builder = org.springframework.security.core.userdetails.User.withUsername(login);
+//            builder.password(user.getPassword());
+//            Set<GrantedAuthority> grantedAuthorities = getAuthorities(user);
+//            builder.authorities(grantedAuthorities);
+//        } else {
+//            throw new UsernameNotFoundException("User not found.");
+//        }
+//
+//        return builder.build();
 
-        return builder.build();
+//        User user = userDao.findByUsername(userId);
+        if(user == null){
+            logger.error("Invalid username or password.");
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        Set<GrantedAuthority> grantedAuthorities = getAuthorities(user);
+
+
+        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), grantedAuthorities);
     }
 
     @Override

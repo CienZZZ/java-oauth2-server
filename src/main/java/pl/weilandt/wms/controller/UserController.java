@@ -2,15 +2,16 @@ package pl.weilandt.wms.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pl.weilandt.wms.dto.UserDTO;
+import pl.weilandt.wms.dto.ApiResponse;
+import pl.weilandt.wms.service.AuthenticationFacadeService;
 import pl.weilandt.wms.service.UserService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -23,22 +24,29 @@ public class UserController {
     public static final String ROLE_USER = "ROLE_USER";
 
     private final UserService userService;
+    private final AuthenticationFacadeService authenticationFacadeService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationFacadeService authenticationFacadeService) {
         this.userService = userService;
+        this.authenticationFacadeService = authenticationFacadeService;
     }
 
+    @Secured({ROLE_ADMIN})
     @RequestMapping(value = "/all",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDTO> getUsers(){
-        return this.userService.getAllUsers().asJava();
+    public ApiResponse getUsers(){
+        log.info(String.format("received request to list user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
+//        return this.userService.getAllUsers().asJava();
+        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getAllUsers().asJava());
     }
 
+    @Secured({ROLE_ADMIN, ROLE_USER})
     @RequestMapping(value = "/{id}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO getUser(@PathVariable("id") Long userId){
-        return this.userService.getUserById(userId);
+    public ApiResponse getUser(@PathVariable("id") Long userId){
+        log.info(String.format("received request to update user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
+        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getUserById(userId));
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHand
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 @Configuration
@@ -26,8 +27,8 @@ import javax.sql.DataSource;
 @Import(SecurityConfig.class)
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    private static final String CLIEN_ID = "devglan-client";
-    private static final String CLIENT_SECRET ="$2a$04$1VGGg98BkCSvSLs4RDSyUu8MrYf0jkY3dgCLAy8GHJe6QA4VAM/X2";
+    private static final String CLIENT_ID = "clientRW";
+    private static final String CLIENT_SECRET ="$2y$12$m9w0K4eOpCQqk0lxHKUts.nvgVl7jIVaftzTZGQl6of9UyIWBsHfe"; // "password"
     private static final String GRANT_TYPE_PASSWORD = "password";
     private static final String AUTHORIZATION_CODE = "authorization_code";
     private static final String REFRESH_TOKEN = "refresh_token";
@@ -43,7 +44,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
+//    @Autowired
+//    private UserDetailsService userDetailsService;
+    @Resource(name = "userService")
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -73,7 +76,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
                 .inMemory()
-                .withClient(CLIEN_ID)
+                .withClient(CLIENT_ID)
                 .secret(CLIENT_SECRET)
                 .authorizedGrantTypes(GRANT_TYPE_PASSWORD, AUTHORIZATION_CODE, REFRESH_TOKEN, IMPLICIT )
                 .scopes(SCOPE_READ, SCOPE_WRITE, TRUST);
