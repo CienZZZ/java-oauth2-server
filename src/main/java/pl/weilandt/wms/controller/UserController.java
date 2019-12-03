@@ -1,17 +1,19 @@
 package pl.weilandt.wms.controller;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pl.weilandt.wms.dto.ApiResponse;
+import pl.weilandt.wms.dto.UserDTO;
 import pl.weilandt.wms.service.AuthenticationFacadeService;
 import pl.weilandt.wms.service.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -35,18 +37,18 @@ public class UserController {
     @RequestMapping(value = "/all",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse getUsers(){
+    public List<UserDTO> getUsers(){
         log.info(String.format("received request to list user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
-//        return this.userService.getAllUsers().asJava();
-        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getAllUsers().asJava());    //TODO sie trzeba zastanowic czy ma byc Api response czy normalnie
+        return this.userService.getAllUsers().asJava();
+//        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getAllUsers().asJava());    //TODO sie trzeba zastanowic czy ma byc Api response czy normalnie
     }
 
     @Secured({ROLE_ADMIN, ROLE_USER})
     @RequestMapping(value = "/{id}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse getUser(@PathVariable("id") Long userId){
+    public UserDTO getUser(@PathVariable("id") Long userId){
         log.info(String.format("received request to update user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
-        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getUserById(userId));
+        return this.userService.getUserById(userId);
     }
 }
