@@ -11,13 +11,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.weilandt.wms.dto.NewUserDTO;
 import pl.weilandt.wms.dto.UserDTO;
 import pl.weilandt.wms.exception.NoUserException;
+import pl.weilandt.wms.exception.ResourceExistsException;
 import pl.weilandt.wms.model.Role;
+import pl.weilandt.wms.model.RoleType;
 import pl.weilandt.wms.model.User;
+import pl.weilandt.wms.repository.RoleRepository;
 import pl.weilandt.wms.repository.UserRepository;
 import pl.weilandt.wms.service.UserService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,10 +35,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -62,11 +69,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDTO save(UserDTO user) {
-        return null;
-    }
-
-    @Override
     public List<UserDTO> getAllUsers() {
         return List.ofAll(this.userRepository.findAll()).map(User::toUserDTO);
     }
@@ -77,6 +79,26 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return  user.map( u-> u.toUserDTO()).orElseThrow(
                 ()-> new NoUserException(id)
         );
+    }
+
+    @Override
+    public UserDTO save(NewUserDTO newUser) {
+        if (userRepository.findByNameIgnoreCase(newUser.getName()).isPresent()){
+            throw new ResourceExistsException(newUser.getName());
+        } else {
+            java.util.List<RoleType> roleTypes = new ArrayList<>();
+            newUser.getRoles().stream().map(role -> roleTypes.add(RoleType.valueOf(role.toString())));
+            //newUser.roles = roleRepository.find(newUser.getRoles());
+            return userRepository.save(new User(
+                    newUser.name,
+                    passwordEncoder.encode(newUser.password),
+                    newUser.registerDate,
+                    newUser.active,
+                    newUser.changedPassword,
+                    newUser.dateLastChange,
+                    newUser.roles
+            )).toUserDTO();
+        }
     }
 
     @Override
