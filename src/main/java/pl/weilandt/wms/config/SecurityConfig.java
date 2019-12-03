@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 @Import(Encoder.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Autowired
     @Resource(name = "userService")
     private UserDetailsService userDetailsService;
 

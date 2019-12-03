@@ -38,7 +38,7 @@ public class UserController {
     public ApiResponse getUsers(){
         log.info(String.format("received request to list user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
 //        return this.userService.getAllUsers().asJava();
-        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getAllUsers().asJava());
+        return new ApiResponse(HttpStatus.OK, SUCCESS, this.userService.getAllUsers().asJava());    //TODO sie trzeba zastanowic czy ma byc Api response czy normalnie
     }
 
     @Secured({ROLE_ADMIN, ROLE_USER})
