@@ -60,4 +60,12 @@ public class UserController {
         return this.userService.save(newUser);
     }
 
+    @Secured({ROLE_ADMIN})
+    @RequestMapping(value = "/delete/{id}",
+            method = RequestMethod.POST)
+    public void deleteUser(@PathVariable("id") long id){
+        log.info(String.format("received request to delete user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
+        this.userService.delete(id);
+    }
+
 }

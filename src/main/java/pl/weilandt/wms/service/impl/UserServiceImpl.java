@@ -15,6 +15,7 @@ import pl.weilandt.wms.dto.NewUserDTO;
 import pl.weilandt.wms.dto.UserDTO;
 import pl.weilandt.wms.exception.NoUserException;
 import pl.weilandt.wms.exception.ResourceExistsException;
+import pl.weilandt.wms.exception.ResourceNotFoundException;
 import pl.weilandt.wms.model.Role;
 import pl.weilandt.wms.model.User;
 import pl.weilandt.wms.repository.RoleRepository;
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByNameIgnoreCase(login).orElse(null);
+        User user = this.userRepository.findByNameIgnoreCase(login).orElse(null);
 
         org.springframework.security.core.userdetails.User.UserBuilder builder = null;
         if (user != null){
@@ -81,14 +82,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDTO save(NewUserDTO newUser) {
-        if (userRepository.findByNameIgnoreCase(newUser.getName()).isPresent()){
+        if (this.userRepository.findByNameIgnoreCase(newUser.getName()).isPresent()){
             throw new ResourceExistsException(newUser.getName());
         } else {
             //java.util.List<RoleType> roleTypes = new ArrayList<>();
 //            Set<Role> roleTypes = null;
 //            newUser.getRoles().stream().map(role -> roleTypes.add(RoleType.valueOf(role.toString()));
 //            newUser.roles = roleRepository.find(roleTypes);
-            return userRepository.save(new User(        // TODO zapisuje uzytkownika z rolami, ale role rozroznia po ID, trzeba zrobic zeby po nazwie
+            return this.userRepository.save(new User(        // TODO zapisuje uzytkownika z rolami, ale role rozroznia po ID, trzeba zrobic zeby po nazwie
                     newUser.name,
                     passwordEncoder.encode(newUser.password),
                     newUser.registerDate,
@@ -101,7 +102,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void delete(long id) {
-
+    public void delete(long userId) {
+        if(!userRepository.findById(userId).isPresent()){
+            throw new ResourceNotFoundException();
+        } else {
+            this.userRepository.deleteById(userId);
+        }
     }
 }
