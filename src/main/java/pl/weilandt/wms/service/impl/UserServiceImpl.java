@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 //            Set<Role> roleTypes = null;
 //            newUser.getRoles().stream().map(role -> roleTypes.add(RoleType.valueOf(role.toString()));
 //            newUser.roles = roleRepository.find(roleTypes);
-            return this.userRepository.save(new User(        // TODO zapisuje uzytkownika z rolami, ale role rozroznia po ID, trzeba zrobic zeby po nazwie
+            return this.userRepository.save(new User(        // TODO zapisuje uzytkownika z rolami, ale role rozroznia po ID, trzeba zrobic zeby po nazwie ?
                     newUser.name,
                     passwordEncoder.encode(newUser.password),
                     newUser.registerDate,
@@ -108,5 +108,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         } else {
             this.userRepository.deleteById(userId);
         }
+    }
+
+    @Override
+    public Optional<UserDTO> changePassword(long id, String newPassword) {
+        final Optional<User> user = this.userRepository.findById(id);
+        return user.map(u->{
+            u.setPassword(passwordEncoder.encode(newPassword));
+            return u.toUserDTO();
+        });
     }
 }

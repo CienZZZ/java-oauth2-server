@@ -22,7 +22,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {         //TODO potem chyba trzeba usunac te sciezki /users/
+    public void configure(HttpSecurity http) throws Exception {         //TODO potem
 
         http
 //                .anonymous().and()

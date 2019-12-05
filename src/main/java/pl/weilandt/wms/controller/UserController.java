@@ -9,6 +9,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.weilandt.wms.dto.NewUserDTO;
 import pl.weilandt.wms.dto.UserDTO;
+import pl.weilandt.wms.exception.NoUserException;
 import pl.weilandt.wms.service.AuthenticationFacadeService;
 import pl.weilandt.wms.service.UserService;
 
@@ -66,6 +67,16 @@ public class UserController {
     public void deleteUser(@PathVariable("id") long id){
         log.info(String.format("received request to delete user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
         this.userService.delete(id);
+    }
+
+    @Secured({ROLE_ADMIN, ROLE_USER})       // TODO czy tylko admin ?
+    @RequestMapping(value = "/{id}/password/{password}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO changePassword(@PathVariable("id") long id, @PathVariable("password") String newPassword){
+        return this.userService.changePassword(id, newPassword).orElseThrow(
+                ()-> new NoUserException(id)
+        );
     }
 
 }
