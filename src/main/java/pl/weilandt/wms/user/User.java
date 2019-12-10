@@ -1,8 +1,8 @@
-package pl.weilandt.wms.model;
+package pl.weilandt.wms.user;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.weilandt.wms.dto.UserDTO;
+import pl.weilandt.wms.user.role.Role;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -42,7 +42,7 @@ public class User {
             joinColumns =  @JoinColumn(name ="USER_ID"),inverseJoinColumns= @JoinColumn(name="ROLE_ID"))
     private Set<Role> roles;
 
-    public User(String name, String password, LocalDate registerDate, Boolean active, Boolean changedPassword, LocalDate dateLastChange, Set<Role> roles) {
+    User(String name, String password, LocalDate registerDate, Boolean active, Boolean changedPassword, LocalDate dateLastChange, Set<Role> roles) {
         this.name = name;
         this.password = password;
         this.registerDate = registerDate;
@@ -55,7 +55,7 @@ public class User {
     protected User() {
     }
 
-    public UserDTO toUserDTO(){
+    UserDTO toUserDTO(){
         return new UserDTO(
                 this.getId(),
                 this.getName(),

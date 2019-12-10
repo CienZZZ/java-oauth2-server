@@ -1,4 +1,4 @@
-package pl.weilandt.wms.service;
+package pl.weilandt.wms;
 
 import org.springframework.security.core.Authentication;
 

@@ -1,5 +1,4 @@
-package pl.weilandt.wms.controller;
-
+package pl.weilandt.wms.user;
 
 import io.vavr.collection.List;
 import org.junit.jupiter.api.AfterAll;
@@ -9,14 +8,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.weilandt.wms.dto.NewUserDTO;
-import pl.weilandt.wms.dto.UserDTO;
 import pl.weilandt.wms.exception.ResourceExistsException;
-import pl.weilandt.wms.model.Role;
-import pl.weilandt.wms.model.RoleType;
-import pl.weilandt.wms.repository.RoleRepository;
-import pl.weilandt.wms.repository.UserRepository;
-import pl.weilandt.wms.service.UserService;
+import pl.weilandt.wms.user.role.Role;
+import pl.weilandt.wms.user.role.RoleType;
+import pl.weilandt.wms.user.role.RoleRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -73,7 +68,7 @@ class UserControllerTest {
     @Test
     public void createUser(){
         final UserDTO created = this.userService.save(new NewUserDTO(
-           "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
+                "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
         assertNotNull(created);
     }

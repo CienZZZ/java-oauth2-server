@@ -1,4 +1,4 @@
-package pl.weilandt.wms.dto;
+package pl.weilandt.wms;
 
 import lombok.Getter;
 import lombok.Setter;

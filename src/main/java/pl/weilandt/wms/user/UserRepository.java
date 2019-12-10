@@ -1,7 +1,6 @@
-package pl.weilandt.wms.repository;
+package pl.weilandt.wms.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.weilandt.wms.model.User;
 
 import java.util.Optional;
 

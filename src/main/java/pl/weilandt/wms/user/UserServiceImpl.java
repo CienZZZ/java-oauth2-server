@@ -1,4 +1,4 @@
-package pl.weilandt.wms.service.impl;
+package pl.weilandt.wms.user;
 
 import io.vavr.collection.List;
 import org.slf4j.Logger;
@@ -11,16 +11,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.weilandt.wms.dto.NewUserDTO;
-import pl.weilandt.wms.dto.UserDTO;
 import pl.weilandt.wms.exception.NoUserException;
 import pl.weilandt.wms.exception.ResourceExistsException;
 import pl.weilandt.wms.exception.ResourceNotFoundException;
-import pl.weilandt.wms.model.Role;
-import pl.weilandt.wms.model.User;
-import pl.weilandt.wms.repository.RoleRepository;
-import pl.weilandt.wms.repository.UserRepository;
-import pl.weilandt.wms.service.UserService;
+import pl.weilandt.wms.user.role.Role;
+import pl.weilandt.wms.user.role.RoleRepository;
 
 import java.util.Optional;
 import java.util.Set;

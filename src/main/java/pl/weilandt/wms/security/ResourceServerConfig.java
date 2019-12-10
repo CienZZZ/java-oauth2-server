@@ -1,4 +1,4 @@
-package pl.weilandt.wms.config;
+package pl.weilandt.wms.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

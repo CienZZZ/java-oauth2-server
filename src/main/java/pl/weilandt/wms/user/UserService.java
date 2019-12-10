@@ -1,8 +1,6 @@
-package pl.weilandt.wms.service;
+package pl.weilandt.wms.user;
 
 import io.vavr.collection.List;
-import pl.weilandt.wms.dto.NewUserDTO;
-import pl.weilandt.wms.dto.UserDTO;
 
 import java.util.Optional;
 

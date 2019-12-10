@@ -1,4 +1,4 @@
-package pl.weilandt.wms.config;
+package pl.weilandt.wms.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

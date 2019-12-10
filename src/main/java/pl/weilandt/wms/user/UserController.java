@@ -1,4 +1,4 @@
-package pl.weilandt.wms.controller;
+package pl.weilandt.wms.user;
 
 
 import org.slf4j.Logger;
@@ -7,11 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import pl.weilandt.wms.dto.NewUserDTO;
-import pl.weilandt.wms.dto.UserDTO;
 import pl.weilandt.wms.exception.NoUserException;
-import pl.weilandt.wms.service.AuthenticationFacadeService;
-import pl.weilandt.wms.service.UserService;
+import pl.weilandt.wms.AuthenticationFacadeService;
 
 import java.util.List;
 

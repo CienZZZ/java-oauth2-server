@@ -1,13 +1,12 @@
-package pl.weilandt.wms.dto;
+package pl.weilandt.wms.user;
 
 import lombok.Getter;
-import pl.weilandt.wms.model.Role;
+import pl.weilandt.wms.user.role.Role;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
-//@Setter
 public class UserDTO {
 
     public final long id;
@@ -19,7 +18,7 @@ public class UserDTO {
     public final LocalDate dateLastChange;
     public final Set<Role> roles;
 
-    public UserDTO(long id, String name, String password, LocalDate registerDate, Boolean active, Boolean changedPassword, LocalDate dateLastChange, Set<Role> roles) {
+    UserDTO(long id, String name, String password, LocalDate registerDate, Boolean active, Boolean changedPassword, LocalDate dateLastChange, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -29,12 +28,4 @@ public class UserDTO {
         this.dateLastChange = dateLastChange;
         this.roles = roles;
     }
-
-    //    public List<String> getRole() {
-//        return roles;
-//    }
-//
-//    public void setRole(List<String> role) {
-//        this.roles = roles;
-//    }
 }

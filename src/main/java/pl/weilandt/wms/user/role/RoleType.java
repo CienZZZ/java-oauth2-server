@@ -1,4 +1,4 @@
-package pl.weilandt.wms.model;
+package pl.weilandt.wms.user.role;
 
 public enum RoleType {
 

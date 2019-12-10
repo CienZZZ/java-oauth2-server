@@ -1,4 +1,4 @@
-package pl.weilandt.wms.controller;
+package pl.weilandt.wms;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

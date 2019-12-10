@@ -1,15 +1,14 @@
-package pl.weilandt.wms.dto;
+package pl.weilandt.wms.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import pl.weilandt.wms.model.Role;
+import pl.weilandt.wms.user.role.Role;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
-//@Setter
 public class NewUserDTO {
 
     public final String name;
