@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDTO save(NewUserDTO newUser) {
+    public UserDTO createNew(NewUserDTO newUser) {
         if (this.userRepository.findByNameIgnoreCase(newUser.getName()).isPresent()){
             throw new ResourceExistsException(newUser.getName());
         } else {

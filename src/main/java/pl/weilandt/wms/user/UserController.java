@@ -55,7 +55,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO createUser(@RequestBody NewUserDTO newUser){
         log.info(String.format("received request to create user %s", authenticationFacadeService.getAuthentication().getPrincipal()));
-        return this.userService.save(newUser);
+        return this.userService.createNew(newUser);
     }
 
     @Secured({ROLE_ADMIN})

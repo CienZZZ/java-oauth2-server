@@ -54,7 +54,7 @@ class UserControllerTest {
         roleStr.add(RoleType.ADMIN.toString());
         roleStr.add(RoleType.USER.toString());
         Set<Role> role = roleRepository.find(roleStr);
-        this.userService.save(new NewUserDTO(
+        this.userService.createNew(new NewUserDTO(
                 "admin", "admin", LocalDate.now(), true, false, null, role
         ));
     }
@@ -67,7 +67,7 @@ class UserControllerTest {
 
     @Test
     public void createUser(){
-        final UserDTO created = this.userService.save(new NewUserDTO(
+        final UserDTO created = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
         assertNotNull(created);
@@ -75,7 +75,7 @@ class UserControllerTest {
 
     @Test
     public void createUserIsReturned(){
-        final UserDTO created = this.userService.save(new NewUserDTO(
+        final UserDTO created = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
         final List<UserDTO> all = this.userService.getAllUsers();
@@ -84,10 +84,10 @@ class UserControllerTest {
 
     @Test
     public void createdUserHasNewId(){
-        final UserDTO created1 = this.userService.save(new NewUserDTO(
+        final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
-        final UserDTO created2 = this.userService.save(new NewUserDTO(
+        final UserDTO created2 = this.userService.createNew(new NewUserDTO(
                 "Adam", "123456", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
         assertNotEquals(created1.id, created2.id);
@@ -97,10 +97,10 @@ class UserControllerTest {
     @Test
     public void userAlreadyExists(){
         assertThrows(ResourceExistsException.class, ()->{
-            final UserDTO created1 = this.userService.save(new NewUserDTO(
+            final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                     "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
             ));
-            final UserDTO created2 = this.userService.save(new NewUserDTO(
+            final UserDTO created2 = this.userService.createNew(new NewUserDTO(
                     "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
             ));
         });
@@ -108,7 +108,7 @@ class UserControllerTest {
 
     @Test
     public void userDeleted(){
-        final UserDTO created1 = this.userService.save(new NewUserDTO(
+        final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
 
