@@ -2,9 +2,11 @@ package pl.weilandt.wms.product;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.weilandt.wms.location.Location;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -31,6 +33,9 @@ public class Product {
 
     @Column( name="description" )
     private String description;
+
+    @OneToMany(mappedBy = "product_id")
+    private List<Location> locations;
 
     Product( String name, String code, BigDecimal quantity, String unit, String description) {
         this.name = name;
