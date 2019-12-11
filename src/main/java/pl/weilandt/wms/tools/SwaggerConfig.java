@@ -63,7 +63,7 @@ public class SwaggerConfig {
     }
 
     public SecurityScheme securityScheme() {
-        GrantType grantType = new ResourceOwnerPasswordCredentialsGrant(AUTH_LINK + "/oauth/token");
+        GrantType grantType = new ResourceOwnerPasswordCredentialsGrant("/oauth/token");
 
         SecurityScheme oauth = new OAuthBuilder().name(SECURITY_SCHEME_NAME)
                 .grantTypes(Arrays.asList(grantType))
