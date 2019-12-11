@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductDTO> edit(ProductDTO productDTO){
+    public ProductDTO edit(ProductDTO productDTO){
         final Optional<Product> product = this.productRepository.findById(productDTO.getId());
         return product.map( p -> {
            p.setName(productDTO.getName());
@@ -46,7 +46,9 @@ public class ProductServiceImpl implements ProductService {
            p.setUnit(productDTO.getUnit());
            p.setDescription(productDTO.getDescription());
             return p.toProductDTO();
-        });
+        }).orElseThrow(
+                ()-> new NoProductException(productDTO.getId())
+        );
     }
 
     @Override

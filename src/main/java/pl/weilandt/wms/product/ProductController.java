@@ -8,7 +8,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -48,11 +47,12 @@ public class ProductController {
         return this.productService.createNew(newProductDTO);
     }
 
-    @RequestMapping(value = "/edit/{id}",
+    @RequestMapping(value = "/edit",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Optional<ProductDTO> editProduct(@PathVariable("id") long productId, @RequestBody ProductDTO productDTO){
+    @ResponseStatus(HttpStatus.OK)
+    public ProductDTO editProduct(@RequestBody ProductDTO productDTO){
         return this.productService.edit(productDTO);
     }
 
