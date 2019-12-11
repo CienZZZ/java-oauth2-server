@@ -8,6 +8,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -16,7 +17,7 @@ public class ProductController {
     private static final Logger Log = LoggerFactory.getLogger(ProductController.class);
 
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final String ROLE_USER = "ROLE_USER";
+    //public static final String ROLE_USER = "ROLE_USER";
 
     private final ProductService productService;
 
@@ -45,6 +46,14 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDTO createProduct(@RequestBody NewProductDTO newProductDTO){
         return this.productService.createNew(newProductDTO);
+    }
+
+    @RequestMapping(value = "/edit/{id}",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Optional<ProductDTO> editProduct(@PathVariable("id") long productId, @RequestBody ProductDTO productDTO){
+        return this.productService.edit(productDTO);
     }
 
     @Secured({ROLE_ADMIN})

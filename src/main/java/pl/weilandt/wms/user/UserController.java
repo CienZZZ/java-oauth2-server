@@ -19,7 +19,7 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final String ROLE_USER = "ROLE_USER";
+    //public static final String ROLE_USER = "ROLE_USER";
 
     private final UserService userService;
     private final AuthenticationFacadeService authenticationFacadeService;
@@ -38,7 +38,7 @@ public class UserController {
         return this.userService.getAllUsers().asJava();
     }
 
-    @Secured({ROLE_ADMIN, ROLE_USER})
+   // @Secured({ROLE_ADMIN, ROLE_USER})
     @RequestMapping(value = "/{id}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,7 +66,7 @@ public class UserController {
         this.userService.delete(id);
     }
 
-    @Secured({ROLE_ADMIN, ROLE_USER})       // TODO czy tylko admin ?
+   // @Secured({ROLE_ADMIN, ROLE_USER})       // TODO czy tylko admin ?
     @RequestMapping(value = "/{id}/password/{password}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,5 +75,4 @@ public class UserController {
                 ()-> new NoUserException(id)
         );
     }
-
 }
