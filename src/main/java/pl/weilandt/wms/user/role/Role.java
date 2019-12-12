@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "ROLES")
@@ -22,7 +23,7 @@ public class Role {
     @Column(name = "DESCRIPTION")
     private String description;
     @Column(name = "CREATED_ON")
-    private Long createdOn;
+    private LocalDate createdOn;
     @Column(name = "MODIFIED_ON")
-    private Long modifiedOn;
+    private LocalDate modifiedOn;
 }

@@ -43,20 +43,13 @@ class UserControllerTest {
     }
 
     @BeforeEach
-    public void clearAfterTest(){
+    public void clearBeforeTest(){
         this.userRepository.deleteAll();
     }
 
     @AfterAll
-    public void createAdminUserAfterAllTests(){
+    public void clearAfterAllTests(){
         this.userRepository.deleteAll();
-        java.util.List<String> roleStr = new ArrayList<>();
-        roleStr.add(RoleType.ADMIN.toString());
-        roleStr.add(RoleType.USER.toString());
-        Set<Role> role = roleRepository.find(roleStr);
-        this.userService.createNew(new NewUserDTO(
-                "admin", "admin", LocalDate.now(), true, false, null, role
-        ));
     }
 
     @Test
