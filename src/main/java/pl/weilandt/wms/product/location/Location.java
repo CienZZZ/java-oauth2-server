@@ -5,6 +5,7 @@ import lombok.Setter;
 import pl.weilandt.wms.product.Product;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Entity
@@ -19,6 +20,7 @@ public class Location implements Serializable {
     private long id;
 
     @Column( name="code", nullable=false, length=255 )
+    @Pattern(regexp = "\\w{3}-\\w{3}-\\w{2}-\\w{2}", message = "wrong format")
     private String code;
 
     @ManyToOne
