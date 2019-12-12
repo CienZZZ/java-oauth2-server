@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "product_locations")
 @Getter
 @Setter
 public class Location implements Serializable {
