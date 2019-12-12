@@ -1,7 +1,8 @@
-package pl.weilandt.wms.location;
+package pl.weilandt.wms.product.location;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.weilandt.wms.product.Product;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,10 +21,16 @@ public class Location implements Serializable {
     @Column( name="code", nullable=false, length=255 )
     private String code;
 
-    public Location(String code) {
+    @ManyToOne
+    private Product product;
+
+    public Location(String code, Product product) {
         this.code = code;
+        this.product = product;
     }
 
     protected Location() {
     }
+
+
 }

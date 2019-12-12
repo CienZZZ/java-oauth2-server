@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.weilandt.wms.exception.NoProductException;
 import pl.weilandt.wms.exception.ResourceExistsException;
 import pl.weilandt.wms.exception.ResourceNotFoundException;
+import pl.weilandt.wms.product.location.Location;
+import pl.weilandt.wms.product.location.LocationRepository;
 
 import java.util.Optional;
 
@@ -18,9 +20,11 @@ public class ProductServiceImpl implements ProductService {
     private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private final ProductRepository productRepository;
+    private final LocationRepository locationRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, LocationRepository locationRepository) {
         this.productRepository = productRepository;
+        this.locationRepository = locationRepository;
     }
 
     @Override
@@ -29,10 +33,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getOne(long id){
-        Optional<Product> product = this.productRepository.findById(id);
+    public ProductDTO getOne(long productId){
+        Optional<Product> product = this.productRepository.findById(productId);
         return product.map(p-> p.toProductDTO()).orElseThrow(
-                ()-> new NoProductException(id)
+                ()-> new NoProductException(productId)
         );
     }
 
@@ -45,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
            p.setQuantity(productDTO.getQuantity());
            p.setUnit(productDTO.getUnit());
            p.setDescription(productDTO.getDescription());
-           p.setLocations(productDTO.getLocations());
+           //p.setLocations(productDTO.getLocations());
             return p.toProductDTO();
         }).orElseThrow(
                 ()-> new NoProductException(productDTO.getId())
@@ -62,8 +66,7 @@ public class ProductServiceImpl implements ProductService {
                     newProduct.code,
                     newProduct.quantity,
                     newProduct.unit,
-                    newProduct.description,
-                    newProduct.locations
+                    newProduct.description
                     )).toProductDTO();
         }
     }
@@ -77,5 +80,18 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
+    @Override
+    public ProductDTO addLocation(long productId, String code) {
+        final Optional<Product> product = this.productRepository.findById(productId);
+        return product.map( p->{
+            final Location location = new Location(
+              code,
+              p
+            );
+            this.locationRepository.save(location);
+            return p.toProductDTO();
+        }).orElseThrow(
+                ()-> new NoProductException(productId)
+        );
+    }
 }

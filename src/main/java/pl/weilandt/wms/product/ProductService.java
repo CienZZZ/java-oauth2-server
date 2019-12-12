@@ -5,8 +5,9 @@ import io.vavr.collection.List;
 public interface ProductService {
 
     List<ProductDTO> getAll();
-    ProductDTO getOne(long id);
+    ProductDTO getOne(long productId);
     ProductDTO edit(ProductDTO productDTO);
     ProductDTO createNew(NewProductDTO newProductDTO);
-    void delete(long id);
+    void delete(long productId);
+    ProductDTO addLocation(long productId, String code);
 }
