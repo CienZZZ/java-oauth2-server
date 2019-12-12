@@ -9,10 +9,10 @@ public class ResourceExistsException extends RuntimeException {
     private static final long serialVersionUID = 3632237324369283635L;
 
     public ResourceExistsException() {
-        super("User with name exist");
+        super("Resource with name exist");
     }
 
     public ResourceExistsException(String name) {
-        super("User with name:"+ name +" exist");
+        super("Resource with name:"+ name +" exist");
     }
 }

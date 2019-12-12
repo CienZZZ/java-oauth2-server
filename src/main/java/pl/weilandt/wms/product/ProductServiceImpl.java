@@ -45,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
            p.setQuantity(productDTO.getQuantity());
            p.setUnit(productDTO.getUnit());
            p.setDescription(productDTO.getDescription());
+           p.setLocations(productDTO.getLocations());
             return p.toProductDTO();
         }).orElseThrow(
                 ()-> new NoProductException(productDTO.getId())
@@ -61,7 +62,8 @@ public class ProductServiceImpl implements ProductService {
                     newProduct.code,
                     newProduct.quantity,
                     newProduct.unit,
-                    newProduct.description
+                    newProduct.description,
+                    newProduct.locations
                     )).toProductDTO();
         }
     }

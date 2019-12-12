@@ -6,7 +6,7 @@ import pl.weilandt.wms.location.Location;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -34,15 +34,18 @@ public class Product {
     @Column( name="description" )
     private String description;
 
-    @OneToMany(mappedBy = "product_id")
-    private List<Location> locations;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "Products_Locations",
+            joinColumns =  @JoinColumn(name ="PRODUCT_ID"),inverseJoinColumns= @JoinColumn(name="LOCATION_ID"))
+    private Set<Location> locations;
 
-    Product( String name, String code, BigDecimal quantity, String unit, String description) {
+    Product( String name, String code, BigDecimal quantity, String unit, String description, Set<Location> locations) {
         this.name = name;
         this.code = code;
         this.quantity = quantity;
         this.unit = unit;
         this.description = description;
+        this.locations = locations;
     }
 
     protected Product() {
@@ -55,7 +58,8 @@ public class Product {
                 this.getCode(),
                 this.getQuantity(),
                 this.getUnit(),
-                this.getDescription()
+                this.getDescription(),
+                this.getLocations()
         );
     }
 }
