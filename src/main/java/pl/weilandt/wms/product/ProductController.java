@@ -62,12 +62,4 @@ public class ProductController {
     public void deleteProduct(@PathVariable("id") long id){
         this.productService.delete(id);
     }
-
-    @RequestMapping(value = "/{id}/locations",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProductDTO addLocation(@PathVariable("id") long id, @RequestBody String location){
-        return this.productService.addLocation(id, location);
-    }
 }

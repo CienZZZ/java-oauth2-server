@@ -9,5 +9,4 @@ public interface ProductService {
     ProductDTO edit(ProductDTO productDTO);
     ProductDTO createNew(NewProductDTO newProductDTO);
     void delete(long productId);
-    ProductDTO addLocation(long productId, String code);
 }

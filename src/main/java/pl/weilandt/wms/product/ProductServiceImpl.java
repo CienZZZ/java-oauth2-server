@@ -8,8 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.weilandt.wms.exception.NoProductException;
 import pl.weilandt.wms.exception.ResourceExistsException;
 import pl.weilandt.wms.exception.ResourceNotFoundException;
-import pl.weilandt.wms.product.location.Location;
-import pl.weilandt.wms.product.location.LocationRepository;
 
 import java.util.Optional;
 
@@ -20,11 +18,9 @@ public class ProductServiceImpl implements ProductService {
     private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private final ProductRepository productRepository;
-    private final LocationRepository locationRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, LocationRepository locationRepository) {
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.locationRepository = locationRepository;
     }
 
     @Override
@@ -49,7 +45,6 @@ public class ProductServiceImpl implements ProductService {
            p.setQuantity(productDTO.getQuantity());
            p.setUnit(productDTO.getUnit());
            p.setDescription(productDTO.getDescription());
-           //p.setLocations(productDTO.getLocations());
             return p.toProductDTO();
         }).orElseThrow(
                 ()-> new NoProductException(productDTO.getId())
@@ -78,20 +73,5 @@ public class ProductServiceImpl implements ProductService {
         } else {
             this.productRepository.deleteById(productId);
         }
-    }
-
-    @Override
-    public ProductDTO addLocation(long productId, String code) {
-        final Optional<Product> product = this.productRepository.findById(productId);
-        return product.map( p->{
-            final Location location = new Location(
-              code,
-              p
-            );
-            this.locationRepository.save(location);
-            return p.toProductDTO();
-        }).orElseThrow(
-                ()-> new NoProductException(productId)
-        );
     }
 }
