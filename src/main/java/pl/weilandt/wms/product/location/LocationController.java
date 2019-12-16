@@ -15,7 +15,7 @@ public class LocationController {
 
     private static final Logger Log = LoggerFactory.getLogger(LocationController.class);
 
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     private final LocationService locationService;
 
