@@ -36,6 +36,7 @@ public class Location implements Serializable {
 
     LocationDTO toLocationDTO(){
         return new LocationDTO(
+                this.getId(),
                 this.getCode(),
                 this.getProduct().getId()
         );

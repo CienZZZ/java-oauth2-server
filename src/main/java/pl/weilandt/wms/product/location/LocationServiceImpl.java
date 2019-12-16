@@ -2,6 +2,7 @@ package pl.weilandt.wms.product.location;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.weilandt.wms.exception.NoLocationException;
 import pl.weilandt.wms.exception.NoProductException;
 import pl.weilandt.wms.exception.ResourceNotFoundException;
 import pl.weilandt.wms.product.Product;
@@ -72,5 +73,25 @@ public class LocationServiceImpl implements LocationService {
                 locationsDTO.add(locations.get(i).toLocationDTO());
             }
         return locationsDTO;
+    }
+
+    @Override
+    public LocationDTO editLocation(long locationId, String newCode) {
+        final Optional<Location> location = this.locationRepository.findById(locationId);
+        return location.map( l->{
+            l.setCode(newCode);
+            return l.toLocationDTO();
+        }).orElseThrow(
+                ()-> new NoLocationException(locationId)
+        );
+    }
+
+    @Override
+    public void delete(long locationId) {
+        if (!this.locationRepository.findById(locationId).isPresent()){
+            throw new ResourceNotFoundException();
+        } else {
+            this.locationRepository.deleteById(locationId);
+        }
     }
 }
