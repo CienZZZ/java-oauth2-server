@@ -15,7 +15,7 @@ public class ProductController {
 
     private static final Logger Log = LoggerFactory.getLogger(ProductController.class);
 
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
     //public static final String ROLE_USER = "ROLE_USER";
 
     private final ProductService productService;
