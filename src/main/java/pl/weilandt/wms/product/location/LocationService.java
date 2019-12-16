@@ -1,12 +1,10 @@
 package pl.weilandt.wms.product.location;
 
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import pl.weilandt.wms.product.ProductDTO;
+import java.util.List;
 
 public interface LocationService {
 
     LocationDTO addLocation(long productId, String code);
-    List<Location> getAllLocationsFromProduct(long productId);
-    Map<ProductDTO, Location> getAllLocationsFromAllProducts();
+    List<LocationDTO> getAllLocationsFromProduct(long productId);
+    List<LocationDTO> getAllLocationsFromAllProducts();
 }

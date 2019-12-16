@@ -1,14 +1,14 @@
 package pl.weilandt.wms.product.location;
 
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.weilandt.wms.exception.NoProductException;
+import pl.weilandt.wms.exception.ResourceNotFoundException;
 import pl.weilandt.wms.product.Product;
-import pl.weilandt.wms.product.ProductDTO;
 import pl.weilandt.wms.product.ProductRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -39,14 +39,38 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Location> getAllLocationsFromProduct(long productId) {
-
-        return null;
+    public List<LocationDTO> getAllLocationsFromProduct(long productId) {
+        if (!this.productRepository.findById(productId).isPresent()){
+            throw new ResourceNotFoundException();
+        } else {
+//            final List<Location> locations = this.locationRepository.findAllByProductId(productId);
+//            List<LocationDTO> locationsDTO = List.empty();
+//            locations.map( l->{
+//               LocationDTO locationDTO = new LocationDTO(
+//                       l.getCode(),
+//                       l.getProduct().getId()
+//               );
+//               return locationsDTO.append(locationDTO);
+//            });
+//
+//            locations.forEach();
+//            return locationsDTO;
+            final List<Location> locations = this.locationRepository.findAllByProductId(productId);
+            final List<LocationDTO> locationsDTO = new ArrayList<>();
+            for (int i =0; i< locations.size(); i++){
+                locationsDTO.add(locations.get(i).toLocationDTO());
+            }
+            return locationsDTO;
+        }
     }
 
     @Override
-    public Map<ProductDTO, Location> getAllLocationsFromAllProducts() {
-
-        return null;
+    public List<LocationDTO> getAllLocationsFromAllProducts() {
+            final List<Location> locations = this.locationRepository.findAll();
+            final List<LocationDTO> locationsDTO = new ArrayList<>();
+            for (int i =0; i<locations.size(); i++){
+                locationsDTO.add(locations.get(i).toLocationDTO());
+            }
+        return locationsDTO;
     }
 }
