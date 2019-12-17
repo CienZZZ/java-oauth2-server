@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.weilandt.wms.exception.NoLocationException;
 import pl.weilandt.wms.exception.NoProductException;
+import pl.weilandt.wms.exception.NotValidPattern;
 import pl.weilandt.wms.exception.ResourceNotFoundException;
 import pl.weilandt.wms.product.Product;
 import pl.weilandt.wms.product.ProductRepository;
@@ -25,69 +26,65 @@ public class LocationService {
     }
 
 
-    LocationDTO addLocation(long productId, String code) {
+    public LocationDTO addLocation(long productId, String code) {
         final Optional<Product> product = this.productRepository.findById(productId);
         return product.map( p->{
-            final Location location = new Location(
-                    code,
-                    p
-            );
-            this.locationRepository.save(location);
-            return location.toLocationDTO();
+            if (!code.matches("\\w{3}-\\w{3}-\\w{2}-\\w{2}")){
+                throw new NotValidPattern("\\w{3}-\\w{3}-\\w{2}-\\w{2}");
+            } else {
+                final Location location = new Location(
+                        code,
+                        p
+                );
+                this.locationRepository.save(location);
+                return location.toLocationDTO();
+            }
         }).orElseThrow(
                 ()-> new NoProductException(productId)
         );
     }
 
 
-    List<LocationDTO> getAllLocationsFromProduct(long productId) {
+    public List<LocationDTO> getAllLocationsFromProduct(long productId) {
         if (!this.productRepository.findById(productId).isPresent()){
             throw new ResourceNotFoundException();
         } else {
-//            final List<Location> locations = this.locationRepository.findAllByProductId(productId);
-//            List<LocationDTO> locationsDTO = List.empty();
-//            locations.map( l->{
-//               LocationDTO locationDTO = new LocationDTO(
-//                       l.getCode(),
-//                       l.getProduct().getId()
-//               );
-//               return locationsDTO.append(locationDTO);
-//            });
-//
-//            locations.forEach();
-//            return locationsDTO;
             final List<Location> locations = this.locationRepository.findAllByProductId(productId);
             final List<LocationDTO> locationsDTO = new ArrayList<>();
-            for (int i =0; i< locations.size(); i++){
-                locationsDTO.add(locations.get(i).toLocationDTO());
+            for (Location location : locations) {
+                locationsDTO.add(location.toLocationDTO());
             }
             return locationsDTO;
         }
     }
 
 
-    List<LocationDTO> getAllLocationsFromAllProducts() {
+    public List<LocationDTO> getAllLocationsFromAllProducts() {
             final List<Location> locations = this.locationRepository.findAll();
             final List<LocationDTO> locationsDTO = new ArrayList<>();
-            for (int i =0; i<locations.size(); i++){
-                locationsDTO.add(locations.get(i).toLocationDTO());
-            }
+        for (Location location : locations) {
+            locationsDTO.add(location.toLocationDTO());
+        }
         return locationsDTO;
     }
 
 
-    LocationDTO editLocation(long locationId, String newCode) {
+    public LocationDTO editLocation(long locationId, String newCode) {
         final Optional<Location> location = this.locationRepository.findById(locationId);
         return location.map( l->{
-            l.setCode(newCode);
-            return l.toLocationDTO();
+            if (!newCode.matches("\\w{3}-\\w{3}-\\w{2}-\\w{2}")){
+                throw new NotValidPattern("\\w{3}-\\w{3}-\\w{2}-\\w{2}");
+            } else {
+                l.setCode(newCode);
+                return l.toLocationDTO();
+            }
         }).orElseThrow(
                 ()-> new NoLocationException(locationId)
         );
     }
 
 
-    void delete(long locationId) {
+    public void delete(long locationId) {
         if (!this.locationRepository.findById(locationId).isPresent()){
             throw new ResourceNotFoundException();
         } else {

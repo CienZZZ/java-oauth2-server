@@ -13,6 +13,6 @@ public class ResourceExistsException extends RuntimeException {
     }
 
     public ResourceExistsException(String name) {
-        super("Resource with name:"+ name +" exist");
+        super("Resource with name: "+ name +" exist");
     }
 }

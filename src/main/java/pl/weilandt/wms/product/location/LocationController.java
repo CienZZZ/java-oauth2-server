@@ -58,6 +58,7 @@ public class LocationController {
     @Secured({ROLE_ADMIN})
     @RequestMapping(value = "/delete/{id}",
             method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteLocation(@PathVariable("id") long id){
         this.locationService.delete(id);
     }

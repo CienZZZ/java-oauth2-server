@@ -24,12 +24,12 @@ public class ProductService {
     }
 
 
-    List<ProductDTO> getAll(){
+    public List<ProductDTO> getAll(){
         return List.ofAll(this.productRepository.findAll()).map(Product::toProductDTO);
     }
 
 
-    ProductDTO getOne(long productId){
+    public ProductDTO getOne(long productId){
         Optional<Product> product = this.productRepository.findById(productId);
         return product.map(p-> p.toProductDTO()).orElseThrow(
                 ()-> new NoProductException(productId)
@@ -37,7 +37,7 @@ public class ProductService {
     }
 
 
-    ProductDTO edit(ProductDTO productDTO){
+    public ProductDTO edit(ProductDTO productDTO){
         final Optional<Product> product = this.productRepository.findById(productDTO.getId());
         return product.map( p -> {
            p.setName(productDTO.getName());
@@ -52,7 +52,7 @@ public class ProductService {
     }
 
 
-    ProductDTO createNew(NewProductDTO newProduct){
+    public ProductDTO createNew(NewProductDTO newProduct){
         if (this.productRepository.findByNameIgnoreCase(newProduct.getName()).isPresent()){
             throw new ResourceExistsException(newProduct.getName());
         } else {
@@ -67,7 +67,7 @@ public class ProductService {
     }
 
 
-    void delete(long productId){
+    public void delete(long productId){
         if (!this.productRepository.findById(productId).isPresent()){
             throw new ResourceNotFoundException();
         } else {

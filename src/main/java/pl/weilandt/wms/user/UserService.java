@@ -63,12 +63,12 @@ public class UserService implements UserDetailsService {
     }
 
 
-    List<UserDTO> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return List.ofAll(this.userRepository.findAll()).map(User::toUserDTO);
     }
 
 
-    UserDTO getUserById(long id) {
+    public UserDTO getUserById(long id) {
         Optional<User> user = this.userRepository.findById(id);
         return  user.map( u-> u.toUserDTO()).orElseThrow(
                 ()-> new NoUserException(id)
@@ -97,7 +97,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    void delete(long userId) {
+    public void delete(long userId) {
         if(!userRepository.findById(userId).isPresent()){
             throw new ResourceNotFoundException();
         } else {
@@ -106,7 +106,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    Optional<UserDTO> changePassword(long id, String newPassword) {
+    public Optional<UserDTO> changePassword(long id, String newPassword) {
         final Optional<User> user = this.userRepository.findById(id);
         return user.map(u->{
             u.setPassword(passwordEncoder.encode(newPassword));

@@ -20,13 +20,13 @@ public class Location implements Serializable {
     private long id;
 
     @Column( name="code", nullable=false, length=255 )
-    @Pattern(regexp = "\\w{3}-\\w{3}-\\w{2}-\\w{2}", message = "wrong format")
+    @Pattern(regexp = "\\w{3}-\\w{3}-\\w{2}-\\w{2}", message = "Wrong format of code, should be like: 000-000-00-00")
     private String code;
 
     @ManyToOne
     private Product product;
 
-    public Location(String code, Product product) {
+    Location(String code, Product product) {
         this.code = code;
         this.product = product;
     }
