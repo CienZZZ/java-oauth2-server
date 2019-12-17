@@ -64,9 +64,7 @@ public class User {
                 this.getActive(),
                 this.getChangedPassword(),
                 this.getDateLastChange(),
-                //this.setRoles(this.roles.stream().map(role -> role.getName().toString()).collect(Collectors.toList()))
                 this.getRoles()
-//                this.getRoles(this.roles.stream().map(role -> role.getName().toString()).collect(Collectors.toList()))
         );
     }
 }

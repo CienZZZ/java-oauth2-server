@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import pl.weilandt.wms.exception.NoUserException;
 import pl.weilandt.wms.AuthenticationFacadeService;
 
 import java.util.List;
@@ -71,8 +70,6 @@ public class UserController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO changePassword(@PathVariable("id") long id, @PathVariable("password") String newPassword){
-        return this.userService.changePassword(id, newPassword).orElseThrow(
-                ()-> new NoUserException(id)
-        );
+        return this.userService.changePassword(id, newPassword);
     }
 }

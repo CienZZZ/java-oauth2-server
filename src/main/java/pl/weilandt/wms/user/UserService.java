@@ -106,11 +106,13 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public Optional<UserDTO> changePassword(long id, String newPassword) {
+    public UserDTO changePassword(long id, String newPassword) {
         final Optional<User> user = this.userRepository.findById(id);
         return user.map(u->{
             u.setPassword(passwordEncoder.encode(newPassword));
             return u.toUserDTO();
-        });
+        }).orElseThrow(
+                ()-> new NoUserException(id)
+        );
     }
 }
