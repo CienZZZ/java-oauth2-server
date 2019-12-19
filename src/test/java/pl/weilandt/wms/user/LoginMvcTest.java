@@ -48,7 +48,7 @@ public class LoginMvcTest {
 
     @Test
     @WithMockUser
-    public void unauthorized() throws Exception {
+    void unauthorized() throws Exception {
         mockMvc.perform(post("/users/all")
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isUnauthorized());
