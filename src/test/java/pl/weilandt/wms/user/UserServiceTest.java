@@ -7,14 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.weilandt.wms.exception.NoUserException;
 import pl.weilandt.wms.exception.ResourceExistsException;
+import pl.weilandt.wms.exception.ResourceNotFoundException;
 import pl.weilandt.wms.user.role.Role;
 import pl.weilandt.wms.user.role.RoleRepository;
 import pl.weilandt.wms.user.role.RoleType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +40,7 @@ class UserServiceTest {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Set<Role> getRoleUserToUse(){
+    Set<Role> getRoleUserToUse(){
         java.util.List<String> roleStr = new ArrayList<>();
         roleStr.add(RoleType.USER.toString());
         Set<Role> role = this.roleRepository.find(roleStr);
@@ -43,23 +48,23 @@ class UserServiceTest {
     }
 
     @BeforeEach
-    public void clearBeforeTest(){
+    void clearBeforeTest(){
         this.userRepository.deleteAll();
     }
 
     @AfterAll
-    public void clearAfterAllTests(){
+    void clearAfterAllTests(){
         this.userRepository.deleteAll();
     }
 
     @Test
-    public void getEmptyList(){
+    void getEmptyList(){
         final List<UserDTO> users = this.userService.getAllUsers();
         assertTrue(users.isEmpty());
     }
 
     @Test
-    public void createUser(){
+    void createUser(){
         final UserDTO created = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
@@ -67,7 +72,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void createUserIsReturned(){
+    void createUserIsReturned(){
         final UserDTO created = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
@@ -76,7 +81,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void createdUserHasNewId(){
+    void createdUserHasNewId(){
         final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
@@ -88,7 +93,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void userAlreadyExists(){
+    void userAlreadyExists(){
         assertThrows(ResourceExistsException.class, ()->{
             final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                     "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
@@ -100,7 +105,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void userDeleted(){
+    void userDeleted(){
         final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
@@ -109,5 +114,47 @@ class UserServiceTest {
         this.userService.delete(userToDelete.getId());
 
         assertFalse(userRepository.findById(created1.getId()).isPresent());
+    }
+
+    @Test
+    void rightUserLoaded(){
+        final UserDTO created1 = this.userService.createNew(new NewUserDTO(
+                "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
+        ));
+        final UserDTO created2 = this.userService.createNew(new NewUserDTO(
+                "Adam", "123456", LocalDate.now(), true, false, null, getRoleUserToUse()
+        ));
+
+        assertEquals("Krzys",userService.loadUserByUsername("Krzys").getUsername());
+    }
+
+    @Test
+    void userHasRightRole(){
+        final UserDTO created1 = this.userService.createNew(new NewUserDTO(
+                "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
+        ));
+
+        assertEquals(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), userService.loadUserByUsername("Krzys").getAuthorities());
+    }
+
+    @Test
+    void userNotFoundByName(){
+        assertThrows(UsernameNotFoundException.class, ()->{
+            this.userService.loadUserByUsername("Zuzia");
+        });
+    }
+
+    @Test
+    void userNotFoundById(){
+        assertThrows(NoUserException.class, ()->{
+           this.userService.getUserById(20939L);
+        });
+    }
+
+    @Test
+    void userNotFoundToDelete(){
+        assertThrows(ResourceNotFoundException.class, ()->{
+           this.userService.delete(204299L);
+        });
     }
 }
