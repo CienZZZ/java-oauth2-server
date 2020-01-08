@@ -4,9 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class UserTest {
+
+    private User userMock = mock(User.class);
 
     @Test
     void constructorTest(){
@@ -16,5 +19,15 @@ class UserTest {
         user = new User("Adam", "wsx321", LocalDate.now(), true, false, null, null);
         assertEquals("Adam", user.getName());
         assertEquals("wsx321", user.getPassword());
+    }
+
+    @Test
+    void testIfUserIsAUser(){
+        assertTrue(userMock instanceof User);
+    }
+
+    @Test
+    void userHasRole(){
+        assertNotNull(userMock.getRoles());
     }
 }
