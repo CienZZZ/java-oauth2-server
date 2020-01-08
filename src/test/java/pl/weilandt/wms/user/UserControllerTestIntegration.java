@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserControllerTest {
+class UserControllerTestIntegration {
 
     @Autowired
     private MockMvc mockMvc;
@@ -82,4 +82,45 @@ class UserControllerTest {
                 .header("Authorization", "Bearer" + accessToken))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void newUserCreated() throws Exception {
+        final String accessToken = obtainAccessToken("admin", "admin");
+
+        String newUser = "{  \"name\": \"Krzys\",  \"password\": \"1234\",  \"registerDate\": \"\",  \"active\": true," +
+                "  \"changedPassword\": false,  \"dateLastChange\": \"\",  \"roles\": [    {      \"createdOn\": \"\"," +
+                "      \"description\": \"user\",      \"id\": 2,      \"modifiedOn\": \"\",      \"name\": \"USER\"    }  ]}";
+
+        mockMvc.perform(post("/users/new")
+                .header("Authorization", "Bearer"+ accessToken)
+                .contentType(CONTENT_TYPE)
+                .content(newUser)
+                .accept(CONTENT_TYPE))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void accessHaveOnlyAdmin() throws Exception {
+        final String accessToken = obtainAccessToken("admin", "admin");
+
+        mockMvc.perform(post("/users/all")
+                .header("Authorization", "Bearer" + accessToken))
+                .andExpect(status().isOk());
+
+        final String accessTokenUser = obtainAccessToken("Krzys", "1234");
+
+        mockMvc.perform(post("/users/all")
+                .header("Authorization", "Bearer" + accessTokenUser))
+                .andExpect(status().isForbidden());
+    }
+
+//    @Test             // nie działa z @WithMockUser    error: bad credentials
+//    @WithMockUser(value = "Adam", username = "Adam", password = "4321", roles = {"USER"}, authorities = {})
+//    @WithMockUser(value = "Adam", username = "Adam", password = "$2y$12$8DfbAeJQJwtTMeO48wsFQuUUKctKeAcd08aJXWjg4u9PrZxp2hG3G", roles = {"USER"}, authorities = {})
+//    void accessHaveOnlyAdmin2() throws Exception {
+//        final String accessToken = obtainAccessToken("Adam", "4321");
+//        mockMvc.perform(post("/users/all")
+//                .header("Authorization", "Bearer" + accessToken))
+//                .andExpect(status().isOk());
+//    }
 }
