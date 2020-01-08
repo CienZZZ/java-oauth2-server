@@ -138,6 +138,14 @@ class UserServiceTest {
     }
 
     @Test
+    void getUserByName(){
+        final UserDTO created = this.userService.createNew(new NewUserDTO(
+                "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
+        ));
+        assertEquals("Krzys", userService.getUserByName(created.getName()).getName());
+    }
+
+    @Test
     void userNotFoundByName(){
         assertThrows(UsernameNotFoundException.class, ()->{
             this.userService.loadUserByUsername("Zuzia");

@@ -38,6 +38,10 @@ class UserControllerIntegrationTest {
 
     private static final String CONTENT_TYPE = "application/json;charset=UTF-8";
 
+    private String newUser = "{  \"name\": \"Krzys\",  \"password\": \"1234\",  \"registerDate\": \"\",  \"active\": true," +
+            "  \"changedPassword\": false,  \"dateLastChange\": \"\",  \"roles\": [    {      \"createdOn\": \"\"," +
+            "      \"description\": \"user\",      \"id\": 2,      \"modifiedOn\": \"\",      \"name\": \"USER\"    }  ]}";
+
     @Before
     public void setup(){
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
@@ -87,16 +91,23 @@ class UserControllerIntegrationTest {
     void newUserCreated() throws Exception {
         final String accessToken = obtainAccessToken("admin", "admin");
 
-        String newUser = "{  \"name\": \"Krzys\",  \"password\": \"1234\",  \"registerDate\": \"\",  \"active\": true," +
-                "  \"changedPassword\": false,  \"dateLastChange\": \"\",  \"roles\": [    {      \"createdOn\": \"\"," +
-                "      \"description\": \"user\",      \"id\": 2,      \"modifiedOn\": \"\",      \"name\": \"USER\"    }  ]}";
-
         mockMvc.perform(post("/users/new")
                 .header("Authorization", "Bearer"+ accessToken)
                 .contentType(CONTENT_TYPE)
                 .content(newUser)
                 .accept(CONTENT_TYPE))
                 .andExpect(status().isCreated());
+
+        //assertEquals("Krzys", userController.getUserByName("Krzys").getName());
+    }
+
+    @Test
+    void getUserByName() throws Exception {
+        final String accessToken = obtainAccessToken("admin", "admin");
+
+        mockMvc.perform(post("/users/name/{name}", "admin")
+                .header("Authorization", "Bearer"+ accessToken))
+                .andExpect(status().isFound());
     }
 
     @Test

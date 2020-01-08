@@ -115,4 +115,11 @@ public class UserService implements UserDetailsService {
                 ()-> new NoUserException(id)
         );
     }
+
+    public UserDTO getUserByName(String name) {
+        Optional<User> user = this.userRepository.findByNameIgnoreCase(name);
+        return  user.map( u-> u.toUserDTO()).orElseThrow(
+                ()-> new ResourceNotFoundException()
+        );
+    }
 }

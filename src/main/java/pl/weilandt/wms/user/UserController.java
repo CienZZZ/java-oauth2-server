@@ -72,4 +72,12 @@ public class UserController {
     public UserDTO changePassword(@PathVariable("id") long id, @PathVariable("password") String newPassword){
         return this.userService.changePassword(id, newPassword);
     }
+
+    @RequestMapping(value = "/name/{name}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.FOUND)
+    public UserDTO getUserByName(@PathVariable("name") String name) {
+        return this.userService.getUserByName(name);
+    }
 }
