@@ -42,7 +42,16 @@ class UserControllerIntegrationTest {
 
     private static final String CONTENT_TYPE = "application/json;charset=UTF-8";
 
-    private String newUser = "{  \"name\": \"Krzys\",  \"password\": \"1234\",  \"registerDate\": \"\",  \"active\": true," +
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer";
+
+    private static final String USER_ADMIN = "admin";
+    private static final String ADMIN_PASSWORD = "admin";
+
+    private static final String USER_NEWUSER = "Krzys";
+    private static final String NEWUSER_PASSWORD = "1234";
+
+    private static final String newUser = "{  \"name\": \"Krzys\",  \"password\": \"1234\",  \"registerDate\": \"\",  \"active\": true," +
             "  \"changedPassword\": false,  \"dateLastChange\": \"\",  \"roles\": [    {      \"createdOn\": \"\"," +
             "      \"description\": \"user\",      \"id\": 2,      \"modifiedOn\": \"\",      \"name\": \"USER\"    }  ]}";
 
@@ -87,19 +96,16 @@ class UserControllerIntegrationTest {
     @Test
     @Order(2)
     void getAuthorization() throws Exception {
-        final String accessToken = obtainAccessToken("admin", "admin");
         mockMvc.perform(post("/users/all")
-                .header("Authorization", "Bearer" + accessToken))
+                .header(AUTHORIZATION, BEARER + obtainAccessToken(USER_ADMIN, ADMIN_PASSWORD)))
                 .andExpect(status().isOk());
     }
 
     @Test
     @Order(3)
     void newUserCreated() throws Exception {
-        final String accessToken = obtainAccessToken("admin", "admin");
-
         mockMvc.perform(post("/users/new")
-                .header("Authorization", "Bearer"+ accessToken)
+                .header(AUTHORIZATION, BEARER + obtainAccessToken(USER_ADMIN,ADMIN_PASSWORD))
                 .contentType(CONTENT_TYPE)
                 .content(newUser)
                 .accept(CONTENT_TYPE))
@@ -109,36 +115,21 @@ class UserControllerIntegrationTest {
     @Test
     @Order(4)
     void getUserByName() throws Exception {
-        final String accessToken = obtainAccessToken("admin", "admin");
-
-        mockMvc.perform(post("/users/name/{name}", "Krzys")
-                .header("Authorization", "Bearer"+ accessToken))
+        mockMvc.perform(post("/users/name/{name}", USER_NEWUSER)
+                .header(AUTHORIZATION, BEARER + obtainAccessToken(USER_ADMIN,ADMIN_PASSWORD)))
                 .andExpect(status().isFound());
     }
 
     @Test
     @Order(5)
     void accessHaveOnlyAdmin() throws Exception {
-        final String accessToken = obtainAccessToken("admin", "admin");
-
         mockMvc.perform(post("/users/all")
-                .header("Authorization", "Bearer" + accessToken))
+                .header(AUTHORIZATION, BEARER + obtainAccessToken(USER_ADMIN,ADMIN_PASSWORD)))
                 .andExpect(status().isOk());
 
-        final String accessTokenUser = obtainAccessToken("Krzys", "1234");
-
         mockMvc.perform(post("/users/all")
-                .header("Authorization", "Bearer" + accessTokenUser))
+                .header(AUTHORIZATION, BEARER + obtainAccessToken(USER_NEWUSER,NEWUSER_PASSWORD)))
                 .andExpect(status().isForbidden());
     }
 
-//    @Test             // nie działa z @WithMockUser    error: bad credentials
-//    @WithMockUser(value = "Adam", username = "Adam", password = "4321", roles = {"USER"}, authorities = {})
-//    @WithMockUser(value = "Adam", username = "Adam", password = "$2y$12$8DfbAeJQJwtTMeO48wsFQuUUKctKeAcd08aJXWjg4u9PrZxp2hG3G", roles = {"USER"}, authorities = {})
-//    void accessHaveOnlyAdmin2() throws Exception {
-//        final String accessToken = obtainAccessToken("Adam", "4321");
-//        mockMvc.perform(post("/users/all")
-//                .header("Authorization", "Bearer" + accessToken))
-//                .andExpect(status().isOk());
-//    }
 }
