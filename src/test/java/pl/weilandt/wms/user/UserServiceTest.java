@@ -153,6 +153,13 @@ class UserServiceTest {
     }
 
     @Test
+    void userNotFoundByName2(){
+        assertThrows(UsernameNotFoundException.class, ()->{
+            this.userService.getUserByName("Zuzia");
+        });
+    }
+
+    @Test
     void userNotFoundById(){
         assertThrows(NoUserException.class, ()->{
            this.userService.getUserById(20939L);

@@ -119,7 +119,7 @@ public class UserService implements UserDetailsService {
     public UserDTO getUserByName(String name) {
         Optional<User> user = this.userRepository.findByNameIgnoreCase(name);
         return  user.map( u-> u.toUserDTO()).orElseThrow(
-                ()-> new ResourceNotFoundException()
+                ()-> new UsernameNotFoundException(name)
         );
     }
 }

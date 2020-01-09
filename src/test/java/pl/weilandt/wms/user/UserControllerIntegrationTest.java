@@ -1,7 +1,10 @@
 package pl.weilandt.wms.user;
 
 import org.junit.Before;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerIntegrationTest {
 
     @Autowired
@@ -73,6 +77,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @Order(1)
     void unauthorized() throws Exception {
         mockMvc.perform(post("/users/all")
                 .accept(MediaType.APPLICATION_JSON))
@@ -80,6 +85,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @Order(2)
     void getAuthorization() throws Exception {
         final String accessToken = obtainAccessToken("admin", "admin");
         mockMvc.perform(post("/users/all")
@@ -88,6 +94,7 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    @Order(3)
     void newUserCreated() throws Exception {
         final String accessToken = obtainAccessToken("admin", "admin");
 
@@ -97,20 +104,20 @@ class UserControllerIntegrationTest {
                 .content(newUser)
                 .accept(CONTENT_TYPE))
                 .andExpect(status().isCreated());
-
-        //assertEquals("Krzys", userController.getUserByName("Krzys").getName());
     }
 
     @Test
+    @Order(4)
     void getUserByName() throws Exception {
         final String accessToken = obtainAccessToken("admin", "admin");
 
-        mockMvc.perform(post("/users/name/{name}", "admin")
+        mockMvc.perform(post("/users/name/{name}", "Krzys")
                 .header("Authorization", "Bearer"+ accessToken))
                 .andExpect(status().isFound());
     }
 
     @Test
+    @Order(5)
     void accessHaveOnlyAdmin() throws Exception {
         final String accessToken = obtainAccessToken("admin", "admin");
 
