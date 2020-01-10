@@ -12,12 +12,14 @@ import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,6 +32,15 @@ class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private UserDTO userDTO;
@@ -109,7 +120,12 @@ class UserControllerIntegrationTest {
                 .contentType(CONTENT_TYPE)
                 .content(NEW_USER_JSON)
                 .accept(CONTENT_TYPE))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+//                .andExpect(content().string(containsString(USER_NEWUSER)));
+                .andExpect(content().string(containsString(userService.getUserByName(USER_NEWUSER).getName())));
+//                .andReturn();
+//        String responseJson = result.getResponse().getContentAsString();
+//        assertThat(responseJson).contains("Krzys");
     }
 
     @Test
