@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -60,9 +61,9 @@ class UserServiceTest {
 
     @Test
     void getEmptyList(){
-        final List<UserDTO> users = this.userService.getAllUsers();
+        final List<UserDTO> usersList = this.userService.getAllUsers();
 
-        assertThat(users).isEmpty();
+        assertThat(usersList).isEmpty();
     }
 
     @Test
@@ -138,7 +139,7 @@ class UserServiceTest {
         final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
-        
+
         assertThat(userService.loadUserByUsername("Krzys").getAuthorities()).isEqualTo(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
@@ -152,29 +153,21 @@ class UserServiceTest {
 
     @Test
     void userNotFoundByName(){
-        assertThrows(UsernameNotFoundException.class, ()->{
-            this.userService.loadUserByUsername("Zuzia");
-        });
+        assertThatExceptionOfType(UsernameNotFoundException.class).isThrownBy(()->{this.userService.loadUserByUsername("Zuzia");});
     }
 
     @Test
     void userNotFoundByName2(){
-        assertThrows(UsernameNotFoundException.class, ()->{
-            this.userService.getUserByName("Zuzia");
-        });
+        assertThatExceptionOfType(UsernameNotFoundException.class).isThrownBy(()->{this.userService.getUserByName("Zuzia");});
     }
 
     @Test
     void userNotFoundById(){
-        assertThrows(NoUserException.class, ()->{
-           this.userService.getUserById(20939L);
-        });
+        assertThatExceptionOfType(NoUserException.class).isThrownBy(()->{this.userService.getUserById(2093962);});
     }
 
     @Test
     void userNotFoundToDelete(){
-        assertThrows(ResourceNotFoundException.class, ()->{
-           this.userService.delete(204299L);
-        });
+        assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(()->{this.userService.delete(204299);});
     }
 }
