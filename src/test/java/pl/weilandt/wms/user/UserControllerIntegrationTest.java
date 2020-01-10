@@ -51,7 +51,7 @@ class UserControllerIntegrationTest {
     private static final String USER_NEWUSER = "Krzys";
     private static final String NEWUSER_PASSWORD = "1234";
 
-    private static final String newUser = "{  \"name\": \"Krzys\",  \"password\": \"1234\",  \"registerDate\": \"\",  \"active\": true," +
+    private static final String NEW_USER_JSON = "{  \"name\": \"Krzys\",  \"password\": \"1234\",  \"registerDate\": \"\",  \"active\": true," +
             "  \"changedPassword\": false,  \"dateLastChange\": \"\",  \"roles\": [    {      \"createdOn\": \"\"," +
             "      \"description\": \"user\",      \"id\": 2,      \"modifiedOn\": \"\",      \"name\": \"USER\"    }  ]}";
 
@@ -107,7 +107,7 @@ class UserControllerIntegrationTest {
         mockMvc.perform(post("/users/new")
                 .header(AUTHORIZATION, BEARER + obtainAccessToken(USER_ADMIN,ADMIN_PASSWORD))
                 .contentType(CONTENT_TYPE)
-                .content(newUser)
+                .content(NEW_USER_JSON)
                 .accept(CONTENT_TYPE))
                 .andExpect(status().isCreated());
     }
