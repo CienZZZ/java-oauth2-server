@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 class UserTest {
@@ -14,20 +14,20 @@ class UserTest {
     @Test
     void constructorTest(){
         User user = new User("Bambo", "12345", LocalDate.now(), true, false, null, null);
-        assertEquals("Bambo", user.getName());
-        assertEquals("12345", user.getPassword());
+        assertThat(user.getName()).isEqualTo("Bambo");
+        assertThat(user.getPassword()).isEqualTo("12345");
         user = new User("Adam", "wsx321", LocalDate.now(), true, false, null, null);
-        assertEquals("Adam", user.getName());
-        assertEquals("wsx321", user.getPassword());
+        assertThat(user.getName()).isEqualTo("Adam");
+        assertThat(user.getPassword()).isEqualTo("wsx321");
     }
 
     @Test
     void testIfUserIsAUser(){
-        assertTrue(userMock instanceof User);
+        assertThat(userMock).isInstanceOf(User.class);
     }
 
     @Test
-    void userHasRole(){
-        assertNotNull(userMock.getRoles());
+    void userGetRoleNotNull(){
+        assertThat(userMock.getRoles()).isNotNull();
     }
 }

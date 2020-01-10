@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -60,7 +61,8 @@ class UserServiceTest {
     @Test
     void getEmptyList(){
         final List<UserDTO> users = this.userService.getAllUsers();
-        assertTrue(users.isEmpty());
+
+        assertThat(users).isEmpty();
     }
 
     @Test
@@ -68,7 +70,8 @@ class UserServiceTest {
         final UserDTO created = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
-        assertNotNull(created);
+
+        assertThat(created).isNotNull();
     }
 
     @Test
@@ -77,7 +80,8 @@ class UserServiceTest {
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
         final List<UserDTO> all = this.userService.getAllUsers();
-        assertEquals("Krzys", all.head().name);
+
+        assertThat(all.head().name).isEqualTo("Krzys");
     }
 
     @Test
@@ -88,8 +92,9 @@ class UserServiceTest {
         final UserDTO created2 = this.userService.createNew(new NewUserDTO(
                 "Adam", "123456", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
-        assertNotEquals(created1.id, created2.id);
-        assertEquals(2, userService.getAllUsers().size());
+
+        assertThat(created1.id).isNotEqualTo(created2.id);
+        assertThat(userService.getAllUsers().size()).isEqualTo(2);
     }
 
     @Test
@@ -113,7 +118,7 @@ class UserServiceTest {
         UserDTO userToDelete = userService.getUserById(created1.getId());
         this.userService.delete(userToDelete.getId());
 
-        assertFalse(userRepository.findById(created1.getId()).isPresent());
+        assertThat(userRepository.findById(created1.getId())).isNotPresent();
     }
 
     @Test
@@ -125,7 +130,7 @@ class UserServiceTest {
                 "Adam", "123456", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
 
-        assertEquals("Krzys",userService.loadUserByUsername("Krzys").getUsername());
+        assertThat(userService.loadUserByUsername("Krzys").getUsername()).isEqualTo("Krzys");
     }
 
     @Test
@@ -133,8 +138,8 @@ class UserServiceTest {
         final UserDTO created1 = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
-
-        assertEquals(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), userService.loadUserByUsername("Krzys").getAuthorities());
+        
+        assertThat(userService.loadUserByUsername("Krzys").getAuthorities()).isEqualTo(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
     @Test
@@ -142,7 +147,7 @@ class UserServiceTest {
         final UserDTO created = this.userService.createNew(new NewUserDTO(
                 "Krzys", "admin123", LocalDate.now(), true, false, null, getRoleUserToUse()
         ));
-        assertEquals("Krzys", userService.getUserByName(created.getName()).getName());
+        assertThat(userService.getUserByName(created.getName()).getName()).isEqualTo("Krzys");
     }
 
     @Test
