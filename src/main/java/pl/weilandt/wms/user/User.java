@@ -7,6 +7,7 @@ import pl.weilandt.wms.user.role.Role;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "users")
@@ -66,5 +67,19 @@ public class User {
                 this.getDateLastChange(),
                 this.getRoles()
         );
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("name='" + name + "'")
+                .add("password='" + password + "'")
+                .add("registerDate=" + registerDate)
+                .add("active=" + active)
+                .add("changedPassword=" + changedPassword)
+                .add("dateLastChange=" + dateLastChange)
+                .add("roles=" + roles)
+                .toString();
     }
 }

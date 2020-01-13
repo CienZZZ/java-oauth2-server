@@ -5,6 +5,7 @@ import pl.weilandt.wms.user.role.Role;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.StringJoiner;
 
 @Getter
 public class UserDTO {
@@ -27,5 +28,19 @@ public class UserDTO {
         this.changedPassword = changedPassword;
         this.dateLastChange = dateLastChange;
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", UserDTO.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("name='" + name + "'")
+                .add("password='" + password + "'")
+                .add("registerDate=" + registerDate)
+                .add("active=" + active)
+                .add("changedPassword=" + changedPassword)
+                .add("dateLastChange=" + dateLastChange)
+                .add("roles=" + roles)
+                .toString();
     }
 }
