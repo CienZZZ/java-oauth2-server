@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.StringJoiner;
 
 @Getter
 public class NewProductDTO {
@@ -32,5 +33,16 @@ public class NewProductDTO {
         this.quantity = quantity;
         this.unit = unit;
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", NewProductDTO.class.getSimpleName() + "[", "]")
+                .add("name='" + name + "'")
+                .add("code='" + code + "'")
+                .add("quantity=" + quantity)
+                .add("unit='" + unit + "'")
+                .add("description='" + description + "'")
+                .toString();
     }
 }

@@ -7,6 +7,7 @@ import pl.weilandt.wms.product.location.Location;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "products")
@@ -57,5 +58,18 @@ public class Product {
                 this.getUnit(),
                 this.getDescription()
         );
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Product.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("name='" + name + "'")
+                .add("code='" + code + "'")
+                .add("quantity=" + quantity)
+                .add("unit='" + unit + "'")
+                .add("description='" + description + "'")
+                .add("locations=" + locations)
+                .toString();
     }
 }
