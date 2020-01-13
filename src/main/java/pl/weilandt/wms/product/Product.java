@@ -35,7 +35,7 @@ public class Product {
     @Column( name="description" )
     private String description;
 
-    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    @OneToMany(mappedBy = "product", orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Location> locations;
 
     Product( String name, String code, BigDecimal quantity, String unit, String description) {

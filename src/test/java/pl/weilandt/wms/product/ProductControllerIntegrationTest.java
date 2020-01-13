@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Before;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
@@ -23,6 +26,8 @@ import org.springframework.util.MultiValueMap;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -140,7 +145,7 @@ class ProductControllerIntegrationTest {
 
     @Test
     @Order(3)
-    void canCreateProduct() throws Exception {
+    void canCreateProductAndCheckIfItIsCreatedItDatabase() throws Exception {
         String expectedProductName = "Piwo";
         String expectedProductCode = "piw-321";
         BigDecimal expectedProductQuantity = BigDecimal.valueOf(120);
@@ -158,10 +163,60 @@ class ProductControllerIntegrationTest {
                 .andReturn();
 
         Product responseProduct = parseResponse(result, Product.class);
+        Optional<Product> productDTOFromDatabase = productRepository.findByNameIgnoreCase(expectedProductName);
+        //assertThat(responseProduct).isEqualTo(productDTOFromDatabase); // TODO: Location przetesuje w osobnej klasie
+        assertThat(responseProduct.getName()).isEqualTo(productDTOFromDatabase.get().getName());
+        assertThat(responseProduct.getCode()).isEqualTo(productDTOFromDatabase.get().getCode());
+        assertThat(responseProduct.getQuantity()).isEqualByComparingTo(productDTOFromDatabase.get().getQuantity());
+        assertThat(responseProduct.getUnit()).isEqualTo(productDTOFromDatabase.get().getUnit());
+        assertThat(responseProduct.getDescription()).isEqualTo(productDTOFromDatabase.get().getDescription());
+    }
+
+    @ParameterizedTest
+    @Order(4)
+    @MethodSource("newProductDTOStream")
+    void parameterizedCanCreateProducts(String expectedProductName, String expectedProductCode, BigDecimal expectedProductQuantity,
+                                         String expectedProductUnit, String expectedProductDescription) throws Exception {
+        NewProductDTO productCreated = new NewProductDTO(expectedProductName, expectedProductCode, expectedProductQuantity, expectedProductUnit, expectedProductDescription);
+
+        MvcResult result = mockMvc.perform(post("/products/new")
+                .header(AUTHORIZATION, BEARER + accessTokenAdmin)
+                .contentType(CONTENT_TYPE)
+                .content(requestBody(productCreated))
+                .accept(CONTENT_TYPE))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        Product responseProduct = parseResponse(result, Product.class);
         assertThat(responseProduct.getName()).isEqualTo(expectedProductName);
         assertThat(responseProduct.getCode()).isEqualTo(expectedProductCode);
         assertThat(responseProduct.getQuantity()).isEqualTo(expectedProductQuantity);
         assertThat(responseProduct.getUnit()).isEqualTo(expectedProductUnit);
         assertThat(responseProduct.getDescription()).isEqualTo(expectedProductDescription);
+    }
+
+    @ParameterizedTest
+    @Order(5)
+    @MethodSource("newProductDTOStream")
+    void parameterizedCanNotCreateProductWithThisSameName(String expectedProductName, String expectedProductCode, BigDecimal expectedProductQuantity,
+                                          String expectedProductUnit, String expectedProductDescription) throws Exception {
+        NewProductDTO productCreated = new NewProductDTO(expectedProductName, expectedProductCode, expectedProductQuantity, expectedProductUnit, expectedProductDescription);
+
+        MvcResult result = mockMvc.perform(post("/products/new")
+                .header(AUTHORIZATION, BEARER + accessTokenAdmin)
+                .contentType(CONTENT_TYPE)
+                .content(requestBody(productCreated))
+                .accept(CONTENT_TYPE))
+                .andExpect(status().isConflict())
+                .andReturn();
+
+    }
+
+    static Stream<Arguments> newProductDTOStream(){
+        return Stream.of(
+                Arguments.of("Lody Koral", "lod-kor533", BigDecimal.valueOf(532922), "szt", "Wielosmakowe lody"),
+                Arguments.of("Paluszki", "palWW-00242", BigDecimal.valueOf(3403322772226L), "szt", "Słone paluszki"),
+                Arguments.of("Jagody", "3262629", BigDecimal.valueOf(340), "kg", "Z polski")
+        );
     }
 }
