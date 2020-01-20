@@ -7,6 +7,7 @@ import pl.weilandt.wms.product.Product;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
+import java.util.StringJoiner;
 
 @Entity
 @Table(name = "product_locations")
@@ -40,5 +41,14 @@ public class Location implements Serializable {
                 this.getCode(),
                 this.getProduct().getId()
         );
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Location.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("code='" + code + "'")
+                .add("product=" + product)
+                .toString();
     }
 }

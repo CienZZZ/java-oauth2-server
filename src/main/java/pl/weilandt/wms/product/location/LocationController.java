@@ -23,7 +23,7 @@ public class LocationController {
         this.locationService = locationService;
     }
 
-    @RequestMapping(value = "/{id}/add",
+    @RequestMapping(value = "/product/{id}/add-location",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
