@@ -212,6 +212,80 @@ class ProductControllerIntegrationTest {
 
     }
 
+    @Test
+    @Order(6)
+    void returnListOfProducts() throws Exception {
+        MvcResult result = mockMvc.perform(post("/products/all")
+                .header(AUTHORIZATION, BEARER + accessTokenAdmin))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<Product> returnedProductList = MAPPER.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Product>>() {});
+        assertThat(returnedProductList).isNotEmpty();
+        List<ProductDTO> databaseProductList = productService.getAll().asJava();
+        assertThat(returnedProductList.size()).isEqualTo(databaseProductList.size());
+    }
+
+    @Test
+    @Order(7)
+    void selectProductById() throws Exception {
+        ProductDTO expectedProductDTO = productService.getOne(productRepository.findByNameIgnoreCase("Jagody").get().getId());
+        MvcResult result = mockMvc.perform(post("/products/{id}", expectedProductDTO.getId())
+                .header(AUTHORIZATION, BEARER + accessTokenAdmin))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Product responseProduct = parseResponse(result, Product.class);
+        responseProduct.toProductDTO();
+        assertThat(responseProduct.getId()).isEqualTo(expectedProductDTO.getId());
+        assertThat(responseProduct.getName()).isEqualTo(expectedProductDTO.getName());
+        assertThat(responseProduct.getCode()).isEqualTo(expectedProductDTO.getCode());
+        assertThat(responseProduct.getQuantity()).isEqualTo(expectedProductDTO.getQuantity());
+        assertThat(responseProduct.getUnit()).isEqualTo(expectedProductDTO.getUnit());
+        assertThat(responseProduct.getDescription()).isEqualTo(expectedProductDTO.getDescription());
+
+    }
+    @Test
+    @Order(8)
+    void canEditChoosenProduct() throws Exception {
+        ProductDTO expectedProductDTO = productService.getOne(productRepository.findByNameIgnoreCase("Jagody").get().getId());
+        String newCode = "jag-456";
+        ProductDTO changedProductDTO = new ProductDTO(expectedProductDTO.getId(), expectedProductDTO.getName()
+                , newCode, expectedProductDTO.getQuantity(), expectedProductDTO.unit, expectedProductDTO.getDescription());
+        MvcResult result = mockMvc.perform(post("/products/edit")
+                .header(AUTHORIZATION, BEARER + accessTokenAdmin)
+                .contentType(CONTENT_TYPE)
+                .content(requestBody(changedProductDTO))
+                .accept(CONTENT_TYPE))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Product responseProduct = parseResponse(result, Product.class);
+        responseProduct.toProductDTO();
+        assertThat(responseProduct.getId()).isEqualTo(expectedProductDTO.getId());
+        assertThat(responseProduct.getName()).isEqualTo(expectedProductDTO.getName());
+        assertThat(responseProduct.getCode()).isNotEqualTo(expectedProductDTO.getCode());
+        assertThat(responseProduct.getQuantity()).isEqualTo(expectedProductDTO.getQuantity());
+        assertThat(responseProduct.getUnit()).isEqualTo(expectedProductDTO.getUnit());
+        assertThat(responseProduct.getDescription()).isEqualTo(expectedProductDTO.getDescription());
+
+        assertThat(responseProduct.getCode()).isEqualTo(newCode);
+    }
+
+    @Test
+    @Order(9)
+    void productDeletedSuccessfully() throws Exception {
+        ProductDTO expectedProductDTO = productService.getOne(productRepository.findByNameIgnoreCase("Jagody").get().getId());
+        MvcResult result = mockMvc.perform(post("/products/delete/{id}", expectedProductDTO.getId())
+                .header(AUTHORIZATION, BEARER + accessTokenAdmin))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(productRepository.findByNameIgnoreCase("Jagody")).isNotPresent();
+    }
+
+
+
     static Stream<Arguments> newProductDTOStream(){
         return Stream.of(
                 Arguments.of("Lody Koral", "lod-kor533", BigDecimal.valueOf(532922), "szt", "Wielosmakowe lody"),

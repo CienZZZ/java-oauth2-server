@@ -3,6 +3,7 @@ package pl.weilandt.wms.product;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.StringJoiner;
 
 @Getter
 public class ProductDTO {
@@ -21,5 +22,17 @@ public class ProductDTO {
         this.quantity = quantity;
         this.unit = unit;
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ProductDTO.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("name='" + name + "'")
+                .add("code='" + code + "'")
+                .add("quantity=" + quantity)
+                .add("unit='" + unit + "'")
+                .add("description='" + description + "'")
+                .toString();
     }
 }
